@@ -1,13 +1,18 @@
 from models import Conta
 from database import BancoDados
+import os
+
+def limpar_tela():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def exibir_menu():
-    print("\n=== BANCO ===")
-    print("1. Criar Conta")
-    print("2. Consultar Saldo")
-    print("3. Depositar")
-    print("4. Sacar")
-    print("0. Sair")
+    print("\n=== BANCO ===\n"
+          "1. Criar Conta\n"
+          "2. Consultar Saldo\n"
+          "3. Depositar\n"
+          "4. Sacar\n"
+          "0. Sair")
+
 
 def sistema():
     db = BancoDados() #inicia o banco de dados
@@ -22,6 +27,7 @@ def sistema():
             nova_conta = Conta(num, nome)
             db.salvar_conta(nova_conta)
             print("Conta registrada com sucesso!")
+            limpar_tela()
 
         elif opcao == "2":
             num = input("Número da conta: ")
@@ -30,6 +36,7 @@ def sistema():
                 print(f"\n{conta}")
             else:
                 print("\nConta não encontrada.")
+            limpar_tela()
             
         elif opcao == "3":
             num = input("Número da conta: ")
@@ -41,6 +48,7 @@ def sistema():
                 print("Depósito realizado!")
             else:
                 print("Conta inexistente.")
+            limpar_tela()
 
         elif opcao == "4":
             num = input("Número: ")
@@ -54,6 +62,7 @@ def sistema():
                     print("Saldo insuficiente.")
             else:
                 print("Conta inexistente.")
+            limpar_tela()
                 
         elif opcao == "0":
             print("Encerrando...")
