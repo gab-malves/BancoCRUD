@@ -1,5 +1,5 @@
 import sqlite3
-from models import Conta
+from models.model_conta import Conta
 
 class BancoDados:
     def __init__(self):
