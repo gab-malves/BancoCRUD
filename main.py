@@ -1,5 +1,5 @@
-from models import Conta
-from database import BancoDados
+from models.model_conta import Conta
+from database.banco_sqlite import BancoDados
 import os
 
 def limpar_tela():

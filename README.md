@@ -5,12 +5,48 @@
 
 Um aplicativo bancário simulado, desenvolvido em Python, focado em operações financeiras essenciais e no conceito de integração de contas (Open Banking). Projeto desenvolvido como requisito avaliativo para o curso de Análise e Desenvolvimento de Sistemas.
 
-## 👥 Equipe (Grupo 4)
-* [Nome do Membro 1] - Front-end (Telas Iniciais)
-* [Nome do Membro 2] - Front-end (Telas Internas)
-* [Nome do Membro 3] - Back-end (Autenticação e Usuários)
-* [Nome do Membro 4] - Back-end (Motor de Transações)
-* [Nome do Membro 5] - Documentação
+## 👥 Equipe (Grupo 4) e Divisão de Tarefas
+* **[Nome do Membro 1] - Front-end A:** Telas Iniciais (Autenticação e dados cadastrais). Trabalha na camada `views/login_cadastro.py`.
+* **[Nome do Membro 2] - Front-end B:** Telas Internas (Dashboard, transações, extrato). Trabalha no restante da camada `views`.
+* **[Nome do Membro 3] - Back-end A:** Autenticação e Usuários (Lógica de login, proteção de telas, modelos de usuário). Trabalha em `controllers/auth_controller.py` e `models`.
+* **[Nome do Membro 4] - Back-end B & Banco de Dados:** Regras de negócio matemáticas (saldo, saques, extato) e controle da persistência (Tabelas e SQLite). Trabalha em `controllers`, `models` e em modo chefe de toda a pasta `database`.
+* **[Nome do Membro 5] - Documentação:** Exclusivamente responsável por elaborar toda a documentação das vantagens/desvantagens para a apresentação teórica do sistema.
+
+## 📁 Arquitetura do Projeto (MVC Simplificado)
+
+Nossa estrutura de arquivos foi pensada para que as 5 pessoas consigam trabalhar de forma independente sem gerar conflitos e dividir as áreas de atuação:
+
+```text
+BancoCRUD/
+├── main.py                   # Ponto de entrada (Inicia o app e roteia)
+├── README.md                 # Documentação (Pessoa 5)
+├── requirements.txt          # Dependências do projeto
+│
+├── database/                 # 🗄️ RESPONSABILIDADE: Pessoa 4
+│   ├── banco_sqlite.py       # Funções base de conexão com o banco
+│   └── tables_setup.py       # Script para criar tabelas iniciais
+│
+├── models/                   # 🏗️ RESPONSABILIDADE: Pessoas 3 e 4
+│   ├── model_usuario.py      # Classe Usuário (Pessoa 3)
+│   ├── model_conta.py        # Classe Conta (Pessoa 4)
+│   └── model_transacao.py    # Classe Transação (Pessoa 4)
+│
+├── controllers/              # ⚙️ RESPONSABILIDADE: Pessoas 3 e 4 (Regras Lógicas)
+│   ├── auth_controller.py    # Login/Cadastro/Sessão (Pessoa 3)
+│   ├── conta_controller.py   # Consultas e criação de conta (Pessoa 4)
+│   └── transacao_controller.py # Validar depósitos, saques, PIX (Pessoa 4)
+│
+├── views/                    # 🎨 RESPONSABILIDADE: Pessoas 1 e 2 (Telas Visuais)
+│   ├── login_cadastro.py     # Telas iniciais (Pessoa 1)
+│   ├── menu_principal.py     # Dashboard principal (Pessoa 2)
+│   ├── telas_operacoes.py    # Saque, Depósito e Transferência (Pessoa 2)
+│   ├── tela_extrato.py       # Tela de histórico (Pessoa 2)
+│   └── componentes/          # Elementos visuais reutilizáveis
+│
+└── utils/                    # 🛠️ UTILITÁRIOS GERAIS
+    ├── validacoes.py         # Tratamento de erros, validações de CPF, etc.
+    └── formatadores.py       # Formatação de datas, moedas, etc.
+```
 
 ## 🎯 Escopo do Projeto
 
@@ -22,7 +58,7 @@ O objetivo deste aplicativo não é ser um sistema perfeito e comercializável, 
 
 ## ⚙️ Funcionalidades
 
-- [] **Sistema de Autenticação:** Login e Cadastro de novos usuários.
+- [ ] **Sistema de Autenticação:** Login e Cadastro de novos usuários.
 - [ ] **Simulação Open Banking:** Vinculação da conta com instituições parceiras (Itaú, Nubank, C6, etc).
 - [ ] **Verificação de Saldo:** Consulta em tempo real do saldo consolidado.
 - [ ] **Operações de Saque:** Retirada de valores com validação de saldo em conta.
@@ -40,4 +76,13 @@ O objetivo deste aplicativo não é ser um sistema perfeito e comercializável, 
 
 1. Clone este repositório:
    ```bash
-   git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
+   git clone https://github.com/seu-usuario/seu-repositorio.git
+   ```
+2. Entre no diretório:
+   ```bash
+   cd BancoCRUD
+   ```
+3. Execute a aplicação inicial:
+   ```bash
+   python main.py
+   ```
