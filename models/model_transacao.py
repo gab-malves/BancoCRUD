@@ -81,10 +81,19 @@ class Transacao:
     # Representação
     # ------------------------------------------------------------------
 
+    def to_dict(self) -> dict:
+        return {
+            "conta_origem": self.conta_origem,
+            "tipo": self.tipo,
+            "valor": self.valor,
+            "conta_destino": self.conta_destino,
+            "descricao": self.descricao,
+            "realizada_em": self.realizada_em
+        }
+
     def __str__(self) -> str:
-        destino = f" -> {self.conta_destino}" if self.conta_destino else ""
         return (
-            f"[{self.realizada_em}] {self.tipo}{destino} | "
+            f"[{self.realizada_em}] {self.tipo}{' -> ' + self.conta_destino if self.conta_destino else ''} | "
             f"R$ {self.valor:,.2f} | {self.descricao}"
         )
 

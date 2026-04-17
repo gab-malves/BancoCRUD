@@ -66,6 +66,13 @@ class Conta:
     # Representação
     # ------------------------------------------------------------------
 
+    def to_dict(self) -> dict:
+        return {
+            "numero": self.numero,
+            "titular": self.titular,
+            "saldo": self.saldo
+        }
+
     def __str__(self) -> str:
         return (
             f"Conta: {self.numero} | "

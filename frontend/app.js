@@ -98,6 +98,7 @@ async function fazerLogin() {
 
     sessao.usuario = data.usuario;
     sessao.offline = false;
+    sessionStorage.setItem("bancocrud_user", JSON.stringify(data.usuario));
     entrarNoApp();
   } catch (e) {
     showAlerta(
@@ -131,6 +132,7 @@ async function fazerLogout() {
     try { await apiFetch("/auth/logout", { method: "POST" }); } catch (_) {}
   }
   sessao = { usuario: null, offline: false };
+  sessionStorage.removeItem("bancocrud_user");
   irTela("tela-login");
   document.getElementById("login-user").value = "";
   document.getElementById("login-senha").value = "";
@@ -305,6 +307,7 @@ async function finalizarCadastro() {
       if (loginData.sucesso) {
         sessao.usuario = loginData.usuario;
         sessao.offline = false;
+        sessionStorage.setItem("bancocrud_user", JSON.stringify(loginData.usuario));
         entrarNoApp();
       }
     }, 1200);
@@ -558,6 +561,7 @@ async function executarOperacao() {
     if (data.sucesso) {
       document.getElementById("op-valor").value = "";
       carregarDashboard();
+      carregarListaContas();
     }
   } catch (e) {
     showAlerta("alerta-op", "Erro ao comunicar com a API.", "erro");
@@ -670,4 +674,11 @@ async function verExtrato() {
 // ─────────────────────────────────────────────────────────────────────────────
 // INIT
 // ─────────────────────────────────────────────────────────────────────────────
-irTela("tela-login");
+const savedUser = sessionStorage.getItem("bancocrud_user");
+if (savedUser) {
+  sessao.usuario = JSON.parse(savedUser);
+  sessao.offline = false;
+  entrarNoApp();
+} else {
+  irTela("tela-login");
+}

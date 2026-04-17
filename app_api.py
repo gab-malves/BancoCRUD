@@ -222,10 +222,11 @@ def criar_conta():
 def listar_contas():
     """Retorna lista de todas as contas."""
     contas = cc.listar_contas()
-    # Normaliza para lista de dicts se vier como lista de strings/objetos
     resultado = []
     for c in contas:
-        if isinstance(c, dict):
+        if hasattr(c, "to_dict"):
+            resultado.append(c.to_dict())
+        elif isinstance(c, dict):
             resultado.append(c)
         else:
             resultado.append({"info": str(c)})
@@ -330,7 +331,20 @@ def pix():
 def extrato(numero):
     """Retorna extrato de uma conta."""
     resultado = tc.ver_extrato(numero)
-    status    = 200 if resultado["sucesso"] else 404
+    if resultado["sucesso"] and "transacoes" in resultado:
+        lista_json = []
+        for t in resultado["transacoes"]:
+            if hasattr(t, "to_dict"):
+                tdict = t.to_dict()
+                # O front espera valores negativos se for um débito para esta conta
+                if t.eh_debito(numero):
+                    tdict["valor"] = -tdict["valor"]
+                lista_json.append(tdict)
+            else:
+                lista_json.append(str(t))
+        resultado["transacoes"] = lista_json
+
+    status = 200 if resultado["sucesso"] else 404
     return jsonify(resultado), status
 
 
@@ -354,12 +368,13 @@ def dashboard():
 
     for c in contas:
         num_contas += 1
-        if isinstance(c, dict):
-            saldo = float(c.get("saldo", 0))
+        cdict = c.to_dict() if hasattr(c, "to_dict") else c if isinstance(c, dict) else {}
+        if cdict:
+            saldo = float(cdict.get("saldo", 0))
             saldo_total += saldo
             resumo_contas.append({
-                "numero":  c.get("numero", ""),
-                "titular": c.get("titular", ""),
+                "numero":  cdict.get("numero", ""),
+                "titular": cdict.get("titular", ""),
                 "saldo":   saldo,
             })
 
