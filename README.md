@@ -19,6 +19,7 @@ Nossa estrutura de arquivos foi pensada para que as 5 pessoas consigam trabalhar
 ```text
 BancoCRUD/
 ├── main.py                   # Ponto de entrada (Inicia o app e roteia)
+|── app_api.py                # linka com o front 
 ├── README.md                 # Documentação (Pessoa 5)
 ├── requirements.txt          # Dependências do projeto
 │
@@ -36,12 +37,10 @@ BancoCRUD/
 │   ├── conta_controller.py   # Consultas e criação de conta (Pessoa 4)
 │   └── transacao_controller.py # Validar depósitos, saques, PIX (Pessoa 4)
 │
-├── views/                    # 🎨 RESPONSABILIDADE: Pessoas 1 e 2 (Telas Visuais)
-│   ├── login_cadastro.py     # Telas iniciais (Pessoa 1)
-│   ├── menu_principal.py     # Dashboard principal (Pessoa 2)
-│   ├── telas_operacoes.py    # Saque, Depósito e Transferência (Pessoa 2)
-│   ├── tela_extrato.py       # Tela de histórico (Pessoa 2)
-│   └── componentes/          # Elementos visuais reutilizáveis
+├── frontend/                    # 🎨 RESPONSABILIDADE: Pessoas 1 e 2 (Telas Visuais)
+│   ├── app.js 
+|   |── index.html                 
+│   └── style.css          
 │
 └── utils/                    # 🛠️ UTILITÁRIOS GERAIS
     ├── validacoes.py         # Tratamento de erros, validações de CPF, etc.
@@ -74,15 +73,15 @@ O objetivo deste aplicativo não é ser um sistema perfeito e comercializável, 
 
 ## 🚀 Como executar o projeto
 
-1. Clone este repositório:
+Clone este repositório:
    ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
+   git clone https://github.com/gab-malves/BancoCRUD
    ```
-2. Entre no diretório:
-   ```bash
-   cd BancoCRUD
-   ```
-3. Execute a aplicação inicial:
-   ```bash
-   python main.py
-   ```
+# 1. Instalar dependências
+pip install flask flask-cors
+
+# 2. Subir a API (dentro da pasta BancoCRUD/)
+python app_api.py
+
+# 3. Abrir o front no VS Code com Live Server
+# Clique direito em index.html → Open with Live Server

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BancoCRUD — Fintech</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       TELA: LOGIN
+  ════════════════════════════════════════════════ -->
+  <div id="tela-login" class="tela ativa">
+    <div class="auth-bg">
+      <div class="auth-card">
+        <div class="logo-wrap">
+          <span class="logo-icon">🏦</span>
+          <h1 class="logo-text">BancoCRUD</h1>
+          <p class="logo-sub">Sua fintech acadêmica</p>
+        </div>
+
+        <div class="tabs-auth">
+          <button class="tab-auth ativo" id="tab-login-btn" onclick="mostrarFormLogin()">Entrar</button>
+          <button class="tab-auth" id="tab-cad-btn" onclick="irParaCadastro()">Criar conta</button>
+        </div>
+
+        <div id="form-login">
+          <div class="field-group">
+            <label>Usuário</label>
+            <input type="text" id="login-user" placeholder="seu_usuario" autocomplete="username">
+          </div>
+          <div class="field-group">
+            <label>Senha</label>
+            <input type="password" id="login-senha" placeholder="••••••••" autocomplete="current-password">
+          </div>
+          <div id="alerta-login" class="alerta" style="display:none"></div>
+          <button class="btn-primary" onclick="fazerLogin()">Entrar</button>
+          <button class="btn-ghost" onclick="usarModoOffline()">Usar sem servidor (demo)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       TELA: CADASTRO
+  ════════════════════════════════════════════════ -->
+  <div id="tela-cadastro" class="tela">
+    <div class="auth-bg">
+      <div class="auth-card auth-card-wide">
+        <button class="btn-voltar" onclick="voltarLogin()">← Voltar</button>
+        <h2 class="form-titulo">Criar sua conta</h2>
+
+        <!-- Etapa 1: Acesso -->
+        <div class="etapa" id="etapa-1">
+          <p class="etapa-label">1 de 3 — Dados de acesso</p>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Usuário *</label>
+              <input type="text" id="cad-user" placeholder="joao123">
+            </div>
+            <div class="field-group">
+              <label>Senha *</label>
+              <input type="password" id="cad-senha" placeholder="••••••••">
+            </div>
+          </div>
+          <button class="btn-primary" onclick="irEtapa2()">Continuar →</button>
+        </div>
+
+        <!-- Etapa 2: Dados pessoais -->
+        <div class="etapa" id="etapa-2" style="display:none">
+          <p class="etapa-label">2 de 3 — Dados pessoais</p>
+          <div class="field-group">
+            <label>Nome completo *</label>
+            <input type="text" id="cad-nome" placeholder="João da Silva">
+          </div>
+          <div class="field-row">
+            <div class="field-group">
+              <label>Data de nascimento</label>
+              <input type="date" id="cad-nasc">
+            </div>
+            <div class="field-group">
+              <label>CPF</label>
+              <input type="text" id="cad-cpf" placeholder="000.000.000-00" maxlength="14">
+            </div>
+          </div>
+          <div class="field-group cep-group">
+            <label>CEP</label>
+            <div class="cep-row">
+              <input type="text" id="cad-cep" placeholder="00000-000" maxlength="9">
+              <button class="btn-cep" onclick="buscarCep()">Buscar</button>
+            </div>
+          </div>
+          <div class="field-row" id="campos-endereco" style="display:none">
+            <div class="field-group">
+              <label>Logradouro</label>
+              <input type="text" id="cad-logradouro" readonly>
+            </div>
+            <div class="field-group">
+              <label>Bairro</label>
+              <input type="text" id="cad-bairro" readonly>
+            </div>
+          </div>
+          <div class="field-row" id="campos-cidade" style="display:none">
+            <div class="field-group">
+              <label>Cidade</label>
+              <input type="text" id="cad-cidade" readonly>
+            </div>
+            <div class="field-group" style="max-width:80px">
+              <label>UF</label>
+              <input type="text" id="cad-uf" readonly>
+            </div>
+          </div>
+          <div id="alerta-cep" class="alerta" style="display:none"></div>
+          <div class="btn-row">
+            <button class="btn-ghost" onclick="irEtapa1()">← Voltar</button>
+            <button class="btn-primary" onclick="irEtapa3()">Continuar →</button>
+          </div>
+        </div>
+
+        <!-- Etapa 3: Banco e saldo -->
+        <div class="etapa" id="etapa-3" style="display:none">
+          <p class="etapa-label">3 de 3 — Dados bancários</p>
+          <div class="field-group">
+            <label>Qual é o seu banco principal?</label>
+            <div class="banco-grid">
+              <div class="banco-card" data-banco="Itaú" onclick="selecionarBanco(this)">
+                <span class="banco-emoji">🟠</span> Itaú
+              </div>
+              <div class="banco-card" data-banco="Bradesco" onclick="selecionarBanco(this)">
+                <span class="banco-emoji">🔴</span> Bradesco
+              </div>
+              <div class="banco-card" data-banco="Nubank" onclick="selecionarBanco(this)">
+                <span class="banco-emoji">🟣</span> Nubank
+              </div>
+              <div class="banco-card" data-banco="C6" onclick="selecionarBanco(this)">
+                <span class="banco-emoji">⚫</span> C6
+              </div>
+              <div class="banco-card" data-banco="Caixa" onclick="selecionarBanco(this)">
+                <span class="banco-emoji">🔵</span> Caixa
+              </div>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Saldo inicial na fintech (opcional)</label>
+            <div class="input-prefix">
+              <span>R$</span>
+              <input type="number" id="cad-saldo" placeholder="0,00" min="0" step="0.01">
+            </div>
+          </div>
+          <div id="alerta-cad" class="alerta" style="display:none"></div>
+          <div class="btn-row">
+            <button class="btn-ghost" onclick="irEtapa2()">← Voltar</button>
+            <button class="btn-primary" onclick="finalizarCadastro()">Criar minha conta 🎉</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       APP: DASHBOARD + ABAS
+  ════════════════════════════════════════════════ -->
+  <div id="tela-app" class="tela">
+
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="header-logo">🏦 <span>BancoCRUD</span></div>
+      <div class="header-user" id="header-user">Olá, —</div>
+      <button class="btn-sair" onclick="fazerLogout()">Sair</button>
+    </header>
+
+    <!-- NAV ABAS -->
+    <nav class="app-nav">
+      <button class="nav-tab ativo" data-aba="dashboard" onclick="irAba('dashboard')">Dashboard</button>
+      <button class="nav-tab" data-aba="contas" onclick="irAba('contas')">Contas</button>
+      <button class="nav-tab" data-aba="operacoes" onclick="irAba('operacoes')">Operações</button>
+      <button class="nav-tab" data-aba="extrato" onclick="irAba('extrato')">Extrato</button>
+    </nav>
+
+    <!-- ── DASHBOARD ───────────────────────────────── -->
+    <section class="aba ativa" id="aba-dashboard">
+      <div class="dash-grid">
+
+        <div class="dash-card dash-card-destaque">
+          <div class="dash-card-label">💰 Saldo total</div>
+          <div class="dash-card-valor" id="dash-saldo-total">R$ —</div>
+          <div class="dash-card-sub" id="dash-saldo-sub">carregando...</div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-label">👥 Contas ativas</div>
+          <div class="dash-card-valor" id="dash-num-contas">—</div>
+          <div class="dash-card-sub">contas cadastradas</div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-label">📊 Resumo rápido</div>
+          <div id="dash-resumo" class="dash-resumo">carregando...</div>
+        </div>
+
+      </div>
+
+      <!-- Gráfico de movimentações -->
+      <div class="grafico-card">
+        <div class="grafico-titulo">📈 Saldos por conta</div>
+        <div class="grafico-wrap" id="grafico-barras">
+          <p class="grafico-vazio">Nenhuma conta cadastrada.</p>
+        </div>
+      </div>
+
+      <!-- Ações rápidas -->
+      <div class="acoes-rapidas">
+        <p class="acoes-titulo">⚡ Acesso rápido</p>
+        <div class="acoes-grid">
+          <button class="acao-btn" onclick="irAba('operacoes'); setOp('deposito')">
+            <span>⬇️</span> Depositar
+          </button>
+          <button class="acao-btn" onclick="irAba('operacoes'); setOp('saque')">
+            <span>⬆️</span> Sacar
+          </button>
+          <button class="acao-btn" onclick="irAba('operacoes'); setOp('pix')">
+            <span>⚡</span> PIX
+          </button>
+          <button class="acao-btn" onclick="irAba('operacoes'); setOp('transferencia')">
+            <span>↔️</span> Transferir
+          </button>
+          <button class="acao-btn" onclick="irAba('extrato')">
+            <span>📋</span> Extrato
+          </button>
+          <button class="acao-btn" onclick="irAba('contas')">
+            <span>➕</span> Nova conta
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CONTAS ───────────────────────────────────── -->
+    <section class="aba" id="aba-contas">
+      <div class="painel">
+        <h2 class="painel-titulo">Criar conta</h2>
+        <div class="field-row">
+          <div class="field-group">
+            <label>Número da conta</label>
+            <input type="text" id="c-num" placeholder="Ex: 1001">
+          </div>
+          <div class="field-group">
+            <label>Titular</label>
+            <input type="text" id="c-nome" placeholder="Nome completo">
+          </div>
+          <div class="field-group">
+            <label>Saldo inicial (R$)</label>
+            <input type="number" id="c-saldo" min="0" step="0.01" placeholder="0,00">
+          </div>
+        </div>
+        <button class="btn-primary" onclick="criarConta()">Criar conta</button>
+        <div class="alerta" id="alerta-criar" style="display:none"></div>
+      </div>
+
+      <div class="painel">
+        <h2 class="painel-titulo">Contas cadastradas</h2>
+        <div id="lista-contas" class="lista-contas">
+          <p class="lista-vazia">Carregando...</p>
+        </div>
+      </div>
+
+      <div class="painel painel-danger">
+        <h2 class="painel-titulo">Excluir conta</h2>
+        <div class="field-group">
+          <label>Número da conta</label>
+          <input type="text" id="del-num" placeholder="Ex: 1001">
+        </div>
+        <button class="btn-danger" onclick="excluirConta()">Excluir conta</button>
+        <div class="alerta" id="alerta-del" style="display:none"></div>
+      </div>
+    </section>
+
+    <!-- ── OPERAÇÕES ────────────────────────────────── -->
+    <section class="aba" id="aba-operacoes">
+      <div class="painel">
+        <div class="op-tabs">
+          <button class="op-tab ativo" id="op-tab-deposito"    onclick="setOp('deposito')">Depósito</button>
+          <button class="op-tab"       id="op-tab-saque"       onclick="setOp('saque')">Saque</button>
+          <button class="op-tab"       id="op-tab-pix"         onclick="setOp('pix')">PIX</button>
+          <button class="op-tab"       id="op-tab-transferencia" onclick="setOp('transferencia')">Transferência</button>
+        </div>
+
+        <div class="field-group" style="margin-top:1.2rem">
+          <label id="label-conta-origem">Conta</label>
+          <input type="text" id="op-conta" placeholder="Número da conta">
+        </div>
+        <div class="field-group" id="op-destino-wrap" style="display:none">
+          <label>Conta de destino</label>
+          <input type="text" id="op-destino" placeholder="Número da conta destino">
+        </div>
+        <div class="field-group">
+          <label>Valor (R$)</label>
+          <div class="input-prefix">
+            <span>R$</span>
+            <input type="number" id="op-valor" min="0.01" step="0.01" placeholder="0,00">
+          </div>
+        </div>
+
+        <button class="btn-primary" id="btn-executar-op" onclick="executarOperacao()">Depositar</button>
+        <div class="alerta" id="alerta-op" style="display:none"></div>
+      </div>
+    </section>
+
+    <!-- ── EXTRATO ──────────────────────────────────── -->
+    <section class="aba" id="aba-extrato">
+      <div class="painel">
+        <div class="field-group">
+          <label>Número da conta</label>
+          <input type="text" id="ext-num" placeholder="Ex: 1001">
+        </div>
+        <button class="btn-primary" onclick="verExtrato()">Ver extrato</button>
+        <div class="alerta" id="alerta-ext" style="display:none"></div>
+      </div>
+
+      <div class="painel" id="painel-extrato" style="display:none">
+        <h2 class="painel-titulo" id="ext-titulo">Histórico</h2>
+        <div id="lista-extrato" class="lista-extrato"></div>
+      </div>
+    </section>
+
+  </div><!-- fim #tela-app -->
+
+  <script src="app.js"></script>
+</body>
+</html>
